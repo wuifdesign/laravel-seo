@@ -1,0 +1,21 @@
+{
+    "name": "wuifdesign/laravel-seo",
+    "description": "SEO integration for Laravel",
+    "keywords": ["laravel", "SEO"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Wohlfahrter",
+            "email": "design.wuif@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "5.1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "WuifDesign\\SEO\\": "src/"
+        }
+    }
+}
