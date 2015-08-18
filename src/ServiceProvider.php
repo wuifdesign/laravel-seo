@@ -12,8 +12,12 @@ class ServiceProvider extends IlluminateServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('wuifdesign.meta', function ($app) {
+        $this->app->singleton('seoMeta', function ($app) {
             return new SEOMeta($app);
+        });
+
+        $this->app->singleton('openGraph', function ($app) {
+            return new OpenGraph($app);
         });
     }
 
@@ -25,7 +29,7 @@ class ServiceProvider extends IlluminateServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/config/wuifdesign-seo.php' => config_path('wuifdesign-seo.php'),
+            __DIR__.'/config/wuifdesign-seo.php' => config_path('seo.php'),
         ]);
     }
 
@@ -37,7 +41,7 @@ class ServiceProvider extends IlluminateServiceProvider
     public function provides()
     {
         return array(
-            'wuifdesign.meta'
+            'seoMeta'
         );
     }
 }

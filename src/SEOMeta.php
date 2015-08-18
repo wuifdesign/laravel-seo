@@ -4,65 +4,66 @@ namespace WuifDesign\SEO;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Log;
 
-class SEOMeta
+class SEOMeta extends SEOElement
 {
-    /**
-     * The application instance.
-     *
-     * @var \Illuminate\Foundation\Application
-     */
-    protected $app;
+    protected $configName = 'meta';
 
     /**
-     * Display logs
-     *
-     * @var boolean
+     * @var string
      */
-    protected $logging;
+    protected $pageTitle = null;
 
     /**
-     * Array to default config settings
+     * Available webmaster tags
      *
      * @var array
      */
-    protected $config;
+    protected $webmasterTags = [
+        'google'   => "google-site-verification",
+        'bing'     => "msvalidate.01",
+        'alexa'    => "alexaVerifyID",
+        'pintrest' => "p:domain_verify",
+        'yandex'   => "yandex-verification"
+    ];
 
     /**
-     * @var string
+     * Set default values
      */
-    protected $title = null;
-
-    /**
-     * @var string
-     */
-    protected $description = null;
-
-    /**
-     * @var string
-     */
-    protected $keywords = null;
-
-    /**
-     * @param Application $app
-     */
-    public function __construct(Application $app)
+    protected function setDefault()
     {
-        $this->app = $app;
-        $this->logging = $this->app['config']['wuifdesign-seo.enable_logging'];
-        $this->config = $this->app['config']['wuifdesign-seo.meta'];
+        $this->addProperty('title', null);
+        $this->addProperty('description', $this->config['description']);
+        $this->addProperty('keywords', $this->config['keywords']);
+        $this->setWebMasterTags();
     }
 
     /**
-     * Renders all meta tags
-     *
-     * @return string
+     * Load an add webmaster tags from config
      */
-    public function render()
+    protected function setWebMasterTags()
     {
-        $return =  $this->getTitle();
-        $return .= $this->getDescription();
-        $return .= $this->getKeywords();
-        return $return;
+        if(!isset($this->config['webmaster_tags'])) {
+            return;
+        }
+        foreach ($this->config['webmaster_tags'] as $name => $value):
+            if (!empty($value)):
+                $meta = array_get($this->webmasterTags, $name, $name);
+                $this->addProperty($meta, $value);
+            endif;
+        endforeach;
+    }
+
+    /**
+     * Set the Page Title
+     *
+     * @param string $pageTitle
+     *
+     * @return SEOMeta
+     */
+    public function setPageTitle($pageTitle)
+    {
+        $this->pageTitle = $pageTitle;
+        return $this;
     }
 
     /**
@@ -70,110 +71,95 @@ class SEOMeta
      *
      * @param array $keywords
      * @param bool|false $append Append to the default keywords
+     *
+     * @return SEOMeta
      */
     public function setKeywords($keywords, $append = false)
     {
         if($append) {
-            $this->keywords = array_merge($this->config['keywords'], $keywords);
-        } else {
-            $this->keywords = $keywords;
-        }
-    }
-
-    /**
-     * Get keywords meta tag
-     *
-     * @return string
-     */
-    public function getKeywords()
-    {
-        $keywords = $this->keywords;
-        if($this->keywords === null) {
-            $keywords = $this->config['keywords'];
+            $keywords = array_merge($this->config['keywords'], $keywords);
         }
 
         if($this->logging && count($keywords) > 10) {
             Log::notice('Too many keywords - '.count($keywords).' keywords - use less than 10 keywords');
         }
 
-        if(count($keywords)) {
-            return '<meta name="keywords" content="'.implode(', ', $keywords).'">'.PHP_EOL;
-        }
-        return '';
+        return $this->addProperty('keywords', $keywords);
     }
 
     /**
-     * Set the title
+     * Add a custom meta tag
      *
-     * @param string $title
-
+     * @param string $name
+     * @param string $value
+     * @param string $key
+     *
+     * @return SEOMeta
      */
-    public function setTitle($title)
+    public function setMeta($name, $value = null, $key = 'name')
     {
-        $this->title = $title;
+        return $this->addProperty($name, $value, $key);
     }
 
     /**
-     * Get title meta tag
+     * Remove a meta tag
      *
-     * @param string $styling Styling of the title
+     * @param string $name
+     *
+     * @return SEOMeta
+     */
+    public function removeMeta($name)
+    {
+        return $this->removeProperty($name);
+    }
+
+    /**
+     * Get a string of a property
+     *
+     * @param $key
+     * @param $value
+     * @param $name
+     *
      * @return string
      */
-    public function getTitle($styling = null)
+    protected function getProperty($key, $value, $name = 'name')
     {
-        if($styling === null) {
-            $styling = $this->config['title_styling'];
+        if($key == 'title') {
+            return '<title>'.$this->parseTitle($value).'</title>';
         }
-        if($this->title === null) {
-            $title = $this->config['title'];
+        if(empty($value)) {
+            return '';
+        }
+        if(is_array($value)) {
+            $value = implode(', ', $value);
+        }
+        return '<meta '.$name.'="'.$key.'" content="'.$value.'">';
+    }
+
+    /**
+     * Parse the title string
+     *
+     * @param $title
+     *
+     * @return string
+     */
+    public function parseTitle($title)
+    {
+        $pageTitle = $this->config['title'];
+        if($this->pageTitle != null) {
+            $pageTitle = $this->pageTitle;
+        }
+
+        if($title === null) {
+            $return = $this->config['title'];
         } else {
-            $title = str_replace(
+            $return = str_replace(
                 array('%title%', '%subtitle%'),
-                array($this->config['title'], $this->title),
-                $styling
+                array($pageTitle, $title),
+                $this->config['title_styling']
             );
         }
-        if($title != '') {
-            return '<title>'.$title.'</title>'.PHP_EOL;
-        }
-        return '';
-    }
 
-    /**
-     * Set the title
-     *
-     * @param string $description
-
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * Get title meta tag
-     *
-     * @param string $styling Styling of the title
-     * @return string
-     */
-    public function getDescription()
-    {
-        $description = $this->description;
-        if($description === null) {
-            $description = $this->config['description'];
-        }
-
-        if($this->logging) {
-            if(strlen($description) > 160) {
-                Log::notice('Meta Description too long - '.strlen($description).' characters - use less than 160 characters');
-            }
-            if(strlen($description) < 120) {
-                Log::notice('Meta Description too short - '.strlen($description).' characters - try to use between 150-160 characters');
-            }
-        }
-        if($description != '') {
-            return '<meta name="description" content="'.$description.'">'.PHP_EOL;
-        }
-        return '';
+        return $return;
     }
 }
