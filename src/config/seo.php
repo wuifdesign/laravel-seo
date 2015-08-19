@@ -5,9 +5,10 @@ return array(
 
     'meta' =>  array(
         'title_styling' => '%title% - %subtitle%',
+        'page_title'    => '123',
 
         'tags' => array(
-            'title'       => 'PageName',
+            'title'       => null,
             'description' => null,
             'author'      => array(null, 'rel'),
         ),

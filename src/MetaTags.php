@@ -90,13 +90,13 @@ class MetaTags extends SEOElement
      */
     public function parseTitle($title)
     {
-        $pageTitle = $this->config['tags']['title'];
+        $pageTitle = $this->config['page_title'];
         if($this->pageTitle != null) {
             $pageTitle = $this->pageTitle;
         }
 
         if($title === null) {
-            $return = $this->config['tags']['title'];
+            $return = $this->config['page_title'];
         } else {
             $return = str_replace(
                 array('%title%', '%subtitle%'),

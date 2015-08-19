@@ -12,6 +12,10 @@ class ServiceProvider extends IlluminateServiceProvider
      */
     public function register()
     {
+        $this->mergeConfigFrom(
+            __DIR__.'/config/seo.php', 'seo'
+        );
+
         $this->app->singleton('metaTags', function ($app) {
             return new MetaTags($app);
         });
@@ -24,8 +28,8 @@ class ServiceProvider extends IlluminateServiceProvider
             return new TwitterCard($app);
         });
 
-        $this->app->singleton('seoTools', function ($app) {
-            return new SEOTools($app);
+        $this->app->singleton('seoTool', function ($app) {
+            return new SEOTool($app);
         });
     }
 

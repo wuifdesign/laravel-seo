@@ -1,7 +1,7 @@
 <?php
 namespace WuifDesign\SEO;
 
-class SEOTools
+class SEOTool
 {
     /**
      * @return MetaTags
@@ -32,7 +32,7 @@ class SEOTools
      *
      * @param string $title
      *
-     * @return SEOTools
+     * @return SEOTool
      */
     public function setTitle($title)
     {
@@ -47,7 +47,7 @@ class SEOTools
      *
      * @param $description
      *
-     * @return SEOTools
+     * @return SEOTool
      */
     public function setDescription($description)
     {
@@ -60,7 +60,7 @@ class SEOTools
     /**
      * @param string $url
      *
-     * @return SEOTools
+     * @return SEOTool
      */
     public function addImage($url)
     {
