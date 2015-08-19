@@ -112,4 +112,4 @@ If you just want to add a metadata to a single meta type you can also use
 
 Or if you just want to add a custom tag use
 
-    SEOTool::metatags()->addProperty(addProperty($key, $value[, $name]);
+    SEOTool::metatags()->addProperty($key, $value[, $name]);
