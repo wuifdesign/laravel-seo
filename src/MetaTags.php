@@ -1,10 +1,7 @@
 <?php
 namespace WuifDesign\SEO;
 
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Log;
-
-class SEOMeta extends SEOElement
+class MetaTags extends SEOElement
 {
     protected $configName = 'meta';
 
@@ -31,9 +28,7 @@ class SEOMeta extends SEOElement
      */
     protected function setDefault()
     {
-        $this->addProperty('title', null);
-        $this->addProperty('description', $this->config['description']);
-        $this->addProperty('keywords', $this->config['keywords']);
+        parent::setDefault();
         $this->setWebMasterTags();
     }
 
@@ -58,59 +53,12 @@ class SEOMeta extends SEOElement
      *
      * @param string $pageTitle
      *
-     * @return SEOMeta
+     * @return MetaTags
      */
     public function setPageTitle($pageTitle)
     {
         $this->pageTitle = $pageTitle;
         return $this;
-    }
-
-    /**
-     * Set the keywords
-     *
-     * @param array $keywords
-     * @param bool|false $append Append to the default keywords
-     *
-     * @return SEOMeta
-     */
-    public function setKeywords($keywords, $append = false)
-    {
-        if($append) {
-            $keywords = array_merge($this->config['keywords'], $keywords);
-        }
-
-        if($this->logging && count($keywords) > 10) {
-            Log::notice('Too many keywords - '.count($keywords).' keywords - use less than 10 keywords');
-        }
-
-        return $this->addProperty('keywords', $keywords);
-    }
-
-    /**
-     * Add a custom meta tag
-     *
-     * @param string $name
-     * @param string $value
-     * @param string $key
-     *
-     * @return SEOMeta
-     */
-    public function setMeta($name, $value = null, $key = 'name')
-    {
-        return $this->addProperty($name, $value, $key);
-    }
-
-    /**
-     * Remove a meta tag
-     *
-     * @param string $name
-     *
-     * @return SEOMeta
-     */
-    public function removeMeta($name)
-    {
-        return $this->removeProperty($name);
     }
 
     /**
@@ -128,10 +76,7 @@ class SEOMeta extends SEOElement
             return '<title>'.$this->parseTitle($value).'</title>';
         }
         if(empty($value)) {
-            return '';
-        }
-        if(is_array($value)) {
-            $value = implode(', ', $value);
+            return null;
         }
         return '<meta '.$name.'="'.$key.'" content="'.$value.'">';
     }
@@ -145,13 +90,13 @@ class SEOMeta extends SEOElement
      */
     public function parseTitle($title)
     {
-        $pageTitle = $this->config['title'];
+        $pageTitle = $this->config['tags']['title'];
         if($this->pageTitle != null) {
             $pageTitle = $this->pageTitle;
         }
 
         if($title === null) {
-            $return = $this->config['title'];
+            $return = $this->config['tags']['title'];
         } else {
             $return = str_replace(
                 array('%title%', '%subtitle%'),

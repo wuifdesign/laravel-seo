@@ -3,7 +3,7 @@ namespace WuifDesign\SEO\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class SEOMeta extends Facade
+class SEOTools extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -12,6 +12,6 @@ class SEOMeta extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'seoMeta';
+        return 'seoTools';
     }
 }

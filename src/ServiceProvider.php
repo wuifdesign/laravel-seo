@@ -12,12 +12,20 @@ class ServiceProvider extends IlluminateServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('seoMeta', function ($app) {
-            return new SEOMeta($app);
+        $this->app->singleton('metaTags', function ($app) {
+            return new MetaTags($app);
         });
 
         $this->app->singleton('openGraph', function ($app) {
             return new OpenGraph($app);
+        });
+
+        $this->app->singleton('twitterCard', function ($app) {
+            return new TwitterCard($app);
+        });
+
+        $this->app->singleton('seoTools', function ($app) {
+            return new SEOTools($app);
         });
     }
 
@@ -41,7 +49,10 @@ class ServiceProvider extends IlluminateServiceProvider
     public function provides()
     {
         return array(
-            'seoMeta'
+            'metaTags',
+            'openGraph',
+            'twitterCard',
+            'seoTools'
         );
     }
 }

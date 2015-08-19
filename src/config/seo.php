@@ -1,23 +1,47 @@
 <?php
-
 return array(
 
-    'enable_logging' => true,
+    'enable_logging' => false,
 
     'meta' =>  array(
-        'title'         => '123',
         'title_styling' => '%title% - %subtitle%',
-        'description'   => '22',
-        'keywords'      => array(),
+
+        'tags' => array(
+            'title'       => 'PageName',
+            'description' => null,
+            'author'      => array(null, 'rel'),
+        ),
+
+        'webmaster_tags' => array(
+            'google'    => null,
+            'bing'      => null,
+            'alexa'     => null,
+            'pinterest' => null,
+            'yandex'    => null,
+        ),
     ),
 
     'opengraph' =>  array(
-        'title'       => '',
-        'description' => '',
-        'url'         => false,
-        'type'        => false,
-        'site_name'   => false,
-        'images'      => [],
+        'tags' => array(
+            'title'       => '',
+            'description' => '',
+            'url'         => null,
+            'type'        => null,
+            'site_name'   => null,
+            'images'      => array(),
+        ),
+    ),
+
+    'twitter' =>  array(
+        'tags' => array(
+            'card'        => null,
+            'title'       => null,
+            'description' => null,
+            'site'        => null,
+            'creator'     => null,
+            'url'         => null,
+            'images'      => array(),
+        ),
     ),
 
 );

@@ -4,7 +4,7 @@ namespace WuifDesign\SEO;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Log;
 
-class SEOElement
+abstract class SEOElement
 {
     /**
      * The application instance.
@@ -46,7 +46,7 @@ class SEOElement
     {
         $this->app = $app;
         $this->logging = $this->app['config']['seo.enable_logging'];
-        $this->config = $this->app['config']['seo.'.$this->configName];
+        $this->config = $this->app['config']['seo.' . $this->configName];
 
         $this->setDefault();
     }
@@ -54,7 +54,16 @@ class SEOElement
     /**
      * Set default values
      */
-    protected function setDefault() { }
+    protected function setDefault()
+    {
+        foreach($this->config['tags'] as $key => $value) {
+            if(is_array($value) && count($value) === 2) {
+                $this->addProperty($key, $value[0], $value[1]);
+            } else {
+                $this->addProperty($key, $value);
+            }
+        }
+    }
 
     /**
      * Renders all meta tags
@@ -77,7 +86,7 @@ class SEOElement
      */
     public function addProperty($key, $value, $name = 'name')
     {
-        $this->properties[$key] = $value;
+        $this->properties[$key] = array($value, $name);
         return $this;
     }
 
@@ -102,21 +111,11 @@ class SEOElement
     protected function getProperties()
     {
         $return = array();
-        foreach(array_filter($this->properties) as $key => $value) {
-            $return[] = $this->getProperty($key, $value);
+        foreach ($this->properties as $key => $value) {
+            $return[] = $this->getProperty($key, $value[0], $value[1]);
         }
-        return implode(PHP_EOL, $return);
+        return implode(PHP_EOL, array_filter($return));
     }
-
-    /**
-     * Get a string of a property
-     *
-     * @param $key
-     * @param $value
-     *
-     * @return string
-     */
-    protected function getProperty($key, $value) { return ''; }
 
     /**
      * Set the title
@@ -139,15 +138,26 @@ class SEOElement
      */
     public function setDescription($description)
     {
-        if($this->logging) {
-            if(strlen($description) > 160) {
-                Log::notice('Meta Description too long - '.strlen($description).' characters - use less than 160 characters');
+        if ($this->logging) {
+            if (strlen($description) > 160) {
+                Log::notice('Meta Description too long - ' . strlen($description) . ' characters - use less than 160 characters');
             }
-            if(strlen($description) < 120) {
-                Log::notice('Meta Description too short - '.strlen($description).' characters - try to use between 150-160 characters');
+            if (strlen($description) < 120) {
+                Log::notice('Meta Description too short - ' . strlen($description) . ' characters - try to use between 150-160 characters');
             }
         }
 
         return $this->addProperty('description', strip_tags($description));
     }
+
+    /**
+     * Get a string of a property
+     *
+     * @param $key
+     * @param $value
+     * @param $name
+     *
+     * @return string
+     */
+    abstract protected function getProperty($key, $value, $name);
 }

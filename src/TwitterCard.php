@@ -1,14 +1,17 @@
 <?php
 namespace WuifDesign\SEO;
 
-class OpenGraph extends SEOElement
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Log;
+
+class TwitterCard extends SEOElement
 {
-    protected $configName = 'opengraph';
+    protected $configName = 'twitter';
 
     /**
      * @var string
      */
-    protected $ogPrefix = 'og:';
+    protected $twitterPrefix = 'twitter:';
 
     /**
      * @var array
@@ -37,15 +40,19 @@ class OpenGraph extends SEOElement
     {
         if($key == 'images') {
             $return = array();
-            foreach($this->images as $image) {
-                $return[] = $this->getProperty('image', $image, $name);
+            foreach($this->images as $key => $image) {
+                if(count($this->images) > 0) {
+                    $return[] = $this->getProperty('image'.$key, $image, $name);
+                } else {
+                    $return[] = $this->getProperty('image', $image, $name);
+                }
             }
             return implode(PHP_EOL, $return);
         }
         if(empty($value)) {
             return null;
         }
-        return '<meta property="'.$this->ogPrefix.$key.'" content="'.$value.'">';
+        return '<meta property="'.$this->twitterPrefix.$key.'" content="'.$value.'">';
     }
 
     /**
