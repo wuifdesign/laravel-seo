@@ -28,6 +28,10 @@ class ServiceProvider extends IlluminateServiceProvider
             return new TwitterCard($app);
         });
 
+        $this->app->singleton('schema', function ($app) {
+            return new Schema($app);
+        });
+
         $this->app->singleton('seoTool', function ($app) {
             return new SEOTool($app);
         });
@@ -56,6 +60,7 @@ class ServiceProvider extends IlluminateServiceProvider
             'metaTags',
             'openGraph',
             'twitterCard',
+            'schema',
             'seoTools'
         );
     }

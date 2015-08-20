@@ -4,6 +4,29 @@ namespace WuifDesign\SEO;
 class SEOTool
 {
     /**
+     * Prefixes to be included to the html tag
+     *
+     * @var array
+     */
+    protected $prefixes = array(
+        'og'      => 'og: http://ogp.me/ns#',
+        'fb'      => 'fb: http://ogp.me/ns/fb#',
+        'music'   => 'music: http://ogp.me/ns/music#',
+        'video'   => 'video: http://ogp.me/ns/video#',
+        'article' => 'article: http://ogp.me/ns/article#',
+        'book'    => 'book: http://ogp.me/ns/book#',
+        'website' => 'profile: http://ogp.me/ns/website#',
+    );
+
+    /**
+     * @param $key
+     */
+    public function addPrefix($key)
+    {
+        $this->usedPrefixes[$key] = $key;
+    }
+
+    /**
      * @return MetaTags
      */
     public function metatags()
@@ -25,6 +48,17 @@ class SEOTool
     public function twitter()
     {
         return app('twitterCard');
+    }
+
+    /**
+     * Renders the schema for the given key
+     *
+     * @param $key
+     * @return string
+     */
+    public function renderSchema($key)
+    {
+        return app('schema')->renderSchema($key);
     }
 
     /**
@@ -76,9 +110,29 @@ class SEOTool
      */
     public function render()
     {
-        $html = $this->metatags()->render().PHP_EOL.PHP_EOL;
-        $html .= $this->opengraph()->render().PHP_EOL.PHP_EOL;
-        $html .= $this->twitter()->render();
+        $html = $this->metatags()->render();
+        if(app('config')['seo.opengraph.enabled']) {
+            $html .= PHP_EOL . PHP_EOL . $this->opengraph()->render();
+        }
+        if(app('config')['seo.twitter.enabled']) {
+            $html .= PHP_EOL . PHP_EOL . $this->twitter()->render();
+        }
         return $html;
+    }
+
+    /**
+     * Generate from all seo providers
+     *
+     * @return string
+     */
+    public function renderPrefixes()
+    {
+        $return = array();
+        foreach(app('config')['seo.used_prefixes'] as $prefix) {
+            if(isset($this->prefixes[$prefix])) {
+                $return[] = $this->prefixes[$prefix];
+            }
+        }
+        return implode(' ', $return);
     }
 }

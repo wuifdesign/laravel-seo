@@ -1,9 +1,6 @@
 <?php
 namespace WuifDesign\SEO;
 
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Log;
-
 class TwitterCard extends SEOElement
 {
     protected $configName = 'twitter';
@@ -52,7 +49,7 @@ class TwitterCard extends SEOElement
         if(empty($value)) {
             return null;
         }
-        return '<meta property="'.$this->twitterPrefix.$key.'" content="'.$value.'">';
+        return '<meta name="'.$this->twitterPrefix.$key.'" content="'.$value.'">';
     }
 
     /**
