@@ -1,8 +1,8 @@
-## Laravel SEO (WIP!)
+## Laravel SEO
 
 - **Laravel**: 5.1
 
-This package includes a helper for SEO Meta tags (Meta, OpenGraph, Twitter).
+This package includes a helper for SEO Meta tags (Meta, OpenGraph, Twitter) and rendering schema blocks.
 
 ## Installation ##
 
