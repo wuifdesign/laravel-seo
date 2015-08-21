@@ -43,6 +43,7 @@ After running the command, the config file will look like the following:
     return array(
 
         'enable_logging' => false,
+        'used_prefixes'  => array('og'),
 
         'meta' =>  array(
             'title_styling' => '%title% - %subtitle%',
@@ -86,6 +87,36 @@ After running the command, the config file will look like the following:
             ),
         ),
 
+        'schema' =>  array(
+            'organization' => array(
+                'type'   => 'Organization',
+                'tags' => array(
+                    'name'    => null,
+                    'address' => array(
+                        'type'           => 'PostalAddress',
+                        'tags' => array(
+                            'streetAddress'   => null,
+                            'postalCode'      => null,
+                            'addressLocality' => null,
+                            'addressCountry' =>  null,
+                        ),
+                    ),
+                    'geo'  => array(
+                        'type'     => 'GeoCoordinates',
+                        'hidden'   => true,
+                        'tags' => array(
+                            'latitude'  => null,
+                            'longitude' => null,
+                        ),
+                    ),
+                    'telephone' => null,
+                    'faxNumber' => null,
+                    'email'     => null,
+                ),
+
+            ),
+        ),
+
     );
 
 You can now add strings for the tags, and if you want to set the attribute for the element, you can parse an array:
@@ -93,6 +124,8 @@ You can now add strings for the tags, and if you want to set the attribute for t
     'name' => array($value, $attribute)
 
 ## Usage ##
+
+### Meta ###
 
 Add Title/description using:
 
@@ -113,3 +146,15 @@ If you just want to add a metadata to a single meta type you can also use
 Or if you just want to add a custom tag use
 
     SEOTool::metatags()->addProperty($key, $value[, $name]);
+    SEOTool::opengraph()->addProperty($key, $value[, $name]);
+    SEOTool::twitter()->addProperty($key, $value[, $name]);
+
+To render all prefixes defined in the config use (available prefixes: 'og', 'fb', 'music', 'video', 'article', 'book', 'website')
+
+    <html prefix="{{ SEOTool::renderPrefixes() }}">
+
+### Schema ###
+
+You can define as many schemas as you like in the config file. To display the schema just add the following code.
+
+    {!! SEOTool::renderSchema($key) !!}

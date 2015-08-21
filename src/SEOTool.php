@@ -19,14 +19,6 @@ class SEOTool
     );
 
     /**
-     * @param $key
-     */
-    public function addPrefix($key)
-    {
-        $this->usedPrefixes[$key] = $key;
-    }
-
-    /**
      * @return MetaTags
      */
     public function metatags()
@@ -48,17 +40,6 @@ class SEOTool
     public function twitter()
     {
         return app('twitterCard');
-    }
-
-    /**
-     * Renders the schema for the given key
-     *
-     * @param $key
-     * @return string
-     */
-    public function renderSchema($key)
-    {
-        return app('schema')->renderSchema($key);
     }
 
     /**
@@ -134,5 +115,16 @@ class SEOTool
             }
         }
         return implode(' ', $return);
+    }
+
+    /**
+     * Renders the schema for the given key
+     *
+     * @param $key
+     * @return string
+     */
+    public function renderSchema($key)
+    {
+        return app('schema')->renderSchema($key);
     }
 }

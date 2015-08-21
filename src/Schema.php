@@ -7,22 +7,17 @@ class Schema
      * Renders the schema for the given key
      *
      * @param $key
-     * @param $data
-     * @param $itemProp
-     * @param $offset
      *
      * @return string
      * @throws \Exception
      */
-    public function renderSchema($key, $data = null, $itemProp = null, $offset = '')
+    public function renderSchema($key)
     {
+        $data = app('config')['seo.schema.'.$key];
         if($data == null) {
-            $data = app('config')['seo.schema.'.$key];
-            if($data == null) {
-                throw new \Exception('Schema not found');
-            }
+            throw new \Exception('Schema not found');
         }
-        return $this->renderElement($data, null, $offset.'    ');
+        return $this->renderElement($data, null);
     }
 
     /**
@@ -31,38 +26,36 @@ class Schema
      * @param $data
      * @param $itemProp
      * @param $offset
-     * @param $is_visible
+     * @param $meta_only
      *
      * @return string
      */
-    public function renderElement($data, $itemProp, $offset = '', $is_visible = true)
+    protected function renderElement($data, $itemProp, $offset = '', $meta_only = false)
     {
-        $return = array();
+        $isMetaOnly = false;
+        if(isset($data['hidden']) && $data['hidden'] === true) {
+            $isMetaOnly = true;
+        }
 
+        $return = array();
         if(is_array($data)) {
             if($itemProp == null) {
-                $return[] = $offset.'<div class="itemscope" itemscope itemtype="http://schema.org/'.$data["_type"].'">';
+                $return[] = $offset.'<div class="itemscope" itemscope itemtype="http://schema.org/'.$data["type"].'">';
             } else {
-                $return[] = $offset.'<div class="itemscope-'.$itemProp.'" itemprop="'.$itemProp.'" itemscope itemtype="http://schema.org/'.$data["_type"].'">';
+                $return[] = $offset.'<div class="itemscope-'.$itemProp.'" itemprop="'.$itemProp.'" itemscope itemtype="http://schema.org/'.$data["type"].'">';
             }
-            $returnString = null;
-            foreach($data as $key => $value) {
-                if($key == '_type' || $key == '_hidden') { continue; }
+            foreach($data['tags'] as $key => $value) {
                 if(empty($value)) { continue; }
-                $visible = true;
-                if(isset($data['_hidden']) && $data['_hidden'] === true) {
-                    $visible = false;
-                }
-                $return[] = $returnData = $this->renderElement($value, $key, $offset.'    ', $visible);
-                if($returnString == null) {
-                    $returnString = $returnData;
-                }
+                $return[] = $this->renderElement($value, $key, $offset.'    ', $isMetaOnly);
             }
-            if($returnString == null) { return null; }
             $return[] = $offset.'</div>';
+            $return = array_filter($return);
+            if(count($return) == 2) {
+                return null;
+            }
         } else {
             if(!empty($data)) {
-                if($is_visible) {
+                if(!$meta_only) {
                     $return[] = $offset.'<span class="itemprop-'.$itemProp.'" itemprop="'.$itemProp.'">'.$data.'</span>';
                 } else {
                     $return[] = $offset.'<meta itemprop="'.$itemProp.'" content="'.$data.'" />';

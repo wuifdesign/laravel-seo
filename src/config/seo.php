@@ -60,24 +60,31 @@ return array(
 
     'schema' =>  array(
         'organization' => array(
-            '_type'   => 'Organization',
-            'name'    => null,
-            'address' => array(
-                '_type'           => 'PostalAddress',
-                'streetAddress'   => null,
-                'postalCode'      => null,
-                'addressLocality' => null,
-                'addressCountry' =>  null,
+            'type'   => 'Organization',
+            'tags' => array(
+                'name'    => null,
+                'address' => array(
+                    'type'           => 'PostalAddress',
+                    'tags' => array(
+                        'streetAddress'   => null,
+                        'postalCode'      => null,
+                        'addressLocality' => null,
+                        'addressCountry' =>  null,
+                    ),
+                ),
+                'geo'  => array(
+                    'type'     => 'GeoCoordinates',
+                    'hidden'   => true,
+                    'tags' => array(
+                        'latitude'  => null,
+                        'longitude' => null,
+                    ),
+                ),
+                'telephone' => null,
+                'faxNumber' => null,
+                'email'     => null,
             ),
-            'geo'  => array(
-                '_type'     => 'GeoCoordinates',
-                '_hidden'   => true,
-                'latitude'  => null,
-                'longitude' => null,
-            ),
-            'telephone' => null,
-            'faxNumber' => null,
-            'email'     => null,
+
         ),
     ),
 
