@@ -45,7 +45,7 @@ class ServiceProvider extends IlluminateServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/config/wuifdesign-seo.php' => config_path('seo.php'),
+            __DIR__.'/config/seo.php' => config_path('seo.php'),
         ]);
     }
 
